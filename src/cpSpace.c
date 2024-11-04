@@ -699,3 +699,22 @@ cpSpaceUseSpatialHash(cpSpace *space, cpFloat dim, int count)
 	space->staticShapes = staticShapes;
 	space->dynamicShapes = dynamicShapes;
 }
+
+// MARK: P7 (Crowd Crushing)
+
+int
+cpSpaceGetSpatialHashTotalCells(
+	cpSpace * space
+)
+{
+	return cpSpaceHashGetTotalCells(space->dynamicShapes);
+}
+
+void
+cpSpaceGetSpatialHashObjectCounts(
+	cpSpace * space,
+	int *cell_counts // Passing a pointer to allow Python to manage the variable
+)
+{
+	cpSpaceHashGetObjectCounts(space->dynamicShapes, cell_counts);
+}

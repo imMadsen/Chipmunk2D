@@ -590,6 +590,68 @@ static cpSpatialIndexClass klass = {
 
 static inline cpSpatialIndexClass *Klass(){return &klass;}
 
+//MARK: P7 (Crowd Crushing)
+int cpSpaceHashGetTotalCells(cpSpaceHash *hash)
+{
+	// Cast index to cpSpaceHash to access hash-specific properties
+    cpBB bb = cpBBNew(0, 0, 320, 240);
+
+    // Get the dimensions and cell counts
+    cpFloat dim = hash->celldim;
+    int n = hash->numcells;
+
+    // Calculate the bounding box range in terms of cells
+    int l = (int)floor(bb.l / dim);
+    int r = (int)floor(bb.r / dim);
+    int b = (int)floor(bb.b / dim);
+    int t = (int)floor(bb.t / dim);
+
+	// Calculate the number of cells within the bounds
+    int width = r - l + 1;
+    int height = t - b + 1;
+    int total_cells = width * height;
+
+	return total_cells;
+}
+
+void cpSpaceHashGetObjectCounts(cpSpaceHash *hash, int* cell_counts)
+{
+
+    // Cast index to cpSpaceHash to access hash-specific properties
+    cpBB bb = cpBBNew(0, 0, 320, 240);
+
+    // Get the dimensions and cell counts
+    cpFloat dim = hash->celldim;
+    int n = hash->numcells;
+
+    // Calculate the bounding box range in terms of cells
+    int l = (int)floor(bb.l / dim);
+    int r = (int)floor(bb.r / dim);
+    int b = (int)floor(bb.b / dim);
+    int t = (int)floor(bb.t / dim);
+
+    // Calculate the number of cells within the bounds
+    int width = r - l + 1;
+    int height = t - b + 1;
+
+    // Iterate over the grid cells
+	int q = 0;
+    for (int i = l; i <= r; i++) {
+        for (int j = b; j <= t; j++) {
+            int cell_count = 0;
+            
+            // Calculate the hash table index for the cell
+            int index = hash_func(i, j, n);
+            for (cpSpaceHashBin *bin = hash->table[index]; bin; bin = bin->next)
+                cell_count++;
+
+            // Calculate the linear index in the cell_counts array
+            cell_counts[q] = cell_count;
+			q++;
+        }
+    }
+}
+
 //MARK: Debug Drawing
 
 //#define CP_BBTREE_DEBUG_DRAW
@@ -607,7 +669,7 @@ cpSpaceHashRenderDebug(cpSpatialIndex *index)
 	}
 	
 	cpSpaceHash *hash = (cpSpaceHash *)index;
-	cpBB bb = cpBBNew(-320, -240, 320, 240);
+	cpBB bb = cpBBNew(0, 0, 320, 320);
 	
 	cpFloat dim = hash->celldim;
 	int n = hash->numcells;
@@ -632,3 +694,4 @@ cpSpaceHashRenderDebug(cpSpatialIndex *index)
 	}
 }
 #endif
+

@@ -242,6 +242,11 @@ CP_EXPORT void cpSpaceReindexShapesForBody(cpSpace *space, cpBody *body);
 /// Switch the space to use a spatial has as it's spatial index.
 CP_EXPORT void cpSpaceUseSpatialHash(cpSpace *space, cpFloat dim, int count);
 
+//MARK: P7 (Crowd Crushing)
+CP_EXPORT int cpSpaceGetSpatialHashTotalCells(cpSpace * space);
+
+CP_EXPORT void cpSpaceGetSpatialHashObjectCounts(cpSpace * space, int *cell_counts);
+
 //MARK: Time Stepping
 
 /// Step the space forward in time by @c dt.
