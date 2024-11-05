@@ -591,64 +591,39 @@ static cpSpatialIndexClass klass = {
 static inline cpSpatialIndexClass *Klass(){return &klass;}
 
 //MARK: P7 (Crowd Crushing)
-int cpSpaceHashGetTotalCells(cpSpaceHash *hash)
-{
-	// Cast index to cpSpaceHash to access hash-specific properties
-    cpBB bb = cpBBNew(0, 0, 320, 240);
 
-    // Get the dimensions and cell counts
-    cpFloat dim = hash->celldim;
+void cpSpaceHashGetHashIndices(cpSpaceHash *hash, int* hash_indices, int l, int r, int b, int t)
+{
+	cpFloat dim = hash->celldim;
     int n = hash->numcells;
 
-    // Calculate the bounding box range in terms of cells
-    int l = (int)floor(bb.l / dim);
-    int r = (int)floor(bb.r / dim);
-    int b = (int)floor(bb.b / dim);
-    int t = (int)floor(bb.t / dim);
-
-	// Calculate the number of cells within the bounds
-    int width = r - l + 1;
-    int height = t - b + 1;
-    int total_cells = width * height;
-
-	return total_cells;
+	// Iterate over the grid cells
+	int q = 0;
+	for (int i = l; i <= r; i++) {
+		for (int j = b; j <= t; j++) {
+			hash_indices[q] = hash_func(i, j, n);
+			q++;
+		}
+	}
 }
 
-void cpSpaceHashGetObjectCounts(cpSpaceHash *hash, int* cell_counts)
+void cpSpaceHashGetObjectCounts(cpSpaceHash *hash, int* cell_counts, int* hash_indices, int hash_indices_len)
 {
-
-    // Cast index to cpSpaceHash to access hash-specific properties
-    cpBB bb = cpBBNew(0, 0, 320, 240);
-
     // Get the dimensions and cell counts
     cpFloat dim = hash->celldim;
     int n = hash->numcells;
 
-    // Calculate the bounding box range in terms of cells
-    int l = (int)floor(bb.l / dim);
-    int r = (int)floor(bb.r / dim);
-    int b = (int)floor(bb.b / dim);
-    int t = (int)floor(bb.t / dim);
-
-    // Calculate the number of cells within the bounds
-    int width = r - l + 1;
-    int height = t - b + 1;
-
     // Iterate over the grid cells
-	int q = 0;
-    for (int i = l; i <= r; i++) {
-        for (int j = b; j <= t; j++) {
-            int cell_count = 0;
-            
-            // Calculate the hash table index for the cell
-            int index = hash_func(i, j, n);
-            for (cpSpaceHashBin *bin = hash->table[index]; bin; bin = bin->next)
-                cell_count++;
+    for (int i = 0; i <= hash_indices_len; i++) {
+		int cell_count = 0;
 
-            // Calculate the linear index in the cell_counts array
-            cell_counts[q] = cell_count;
-			q++;
-        }
+		// Calculate the hash table index for the cell
+		int index = hash_indices[i];
+		for (cpSpaceHashBin *bin = hash->table[index]; bin; bin = bin->next)
+			cell_count++;
+
+		// Calculate the linear index in the cell_counts array
+		cell_counts[i] = cell_count;
     }
 }
 
