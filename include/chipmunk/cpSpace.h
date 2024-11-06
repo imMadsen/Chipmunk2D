@@ -243,9 +243,9 @@ CP_EXPORT void cpSpaceReindexShapesForBody(cpSpace *space, cpBody *body);
 CP_EXPORT void cpSpaceUseSpatialHash(cpSpace *space, cpFloat dim, int count);
 
 //MARK: P7 (Crowd Crushing)
-CP_EXPORT int cpSpaceGetSpatialHashTotalCells(cpSpace * space);
+CP_EXPORT void cpSpaceGetSpatialHashIndices(cpSpace * space, int* hash_indices, int l, int r, int b, int t);
 
-CP_EXPORT void cpSpaceGetSpatialHashObjectCounts(cpSpace * space, int *cell_counts);
+CP_EXPORT void cpSpaceGetSpatialHashObjectCounts(cpSpace * space, int *cell_counts, int* hash_indices, int hash_indices_len);
 
 //MARK: Time Stepping
 

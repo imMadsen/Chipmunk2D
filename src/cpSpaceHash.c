@@ -614,7 +614,7 @@ void cpSpaceHashGetObjectCounts(cpSpaceHash *hash, int* cell_counts, int* hash_i
     int n = hash->numcells;
 
     // Iterate over the grid cells
-    for (int i = 0; i <= hash_indices_len; i++) {
+    for (int i = 0; i < hash_indices_len; i++) {
 		int cell_count = 0;
 
 		// Calculate the hash table index for the cell

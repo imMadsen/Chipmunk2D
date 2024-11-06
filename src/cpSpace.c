@@ -700,21 +700,27 @@ cpSpaceUseSpatialHash(cpSpace *space, cpFloat dim, int count)
 	space->dynamicShapes = dynamicShapes;
 }
 
-// MARK: P7 (Crowd Crushing)
+//MARK: P7 (Crowd Crushing)
 
-int
-cpSpaceGetSpatialHashTotalCells(
-	cpSpace * space
+void cpSpaceGetSpatialHashIndices(
+	cpSpace * space,
+	int* hash_indices,
+	int l,
+	int r,
+	int b,
+	int t
 )
 {
-	return cpSpaceHashGetTotalCells(space->dynamicShapes);
+	cpSpaceHashGetHashIndices(space->dynamicShapes, hash_indices, l, r, b, t);
 }
 
 void
 cpSpaceGetSpatialHashObjectCounts(
 	cpSpace * space,
-	int *cell_counts // Passing a pointer to allow Python to manage the variable
+	int *cell_counts, // Passing a pointer to allow Python to manage the variable,
+	int* hash_indices,
+	int hash_indices_len
 )
 {
-	cpSpaceHashGetObjectCounts(space->dynamicShapes, cell_counts);
+	cpSpaceHashGetObjectCounts(space->dynamicShapes, cell_counts, hash_indices, hash_indices_len);
 }
